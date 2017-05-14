@@ -27,7 +27,7 @@ defmodule Spell.Config do
   @doc """
   Gets the transport module
   """
-  def transport, do: transport(transport_name)
+  def transport, do: transport(transport_name())
 
   def transport("websocket"), do: Spell.Transport.WebSocket
   def transport("rawsocket"), do: Spell.Transport.RawSocket

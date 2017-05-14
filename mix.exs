@@ -7,11 +7,11 @@ defmodule Spell.Mixfile do
      name: "Spell",
      source_url: "https://github.com/MyMedsAndMe/spell",
      elixir: "~> 1.0",
-     description: description,
-     package: package,
+     description: description(),
+     package: package(),
      deps: deps(Mix.env),
-     aliases: aliases,
-     docs: docs,
+     aliases: aliases(),
+     docs: docs(),
      preferred_cli_env: ["test.all": :test,
                          "test.unit": :test,
                          "test.integration": :test,
@@ -74,7 +74,7 @@ defmodule Spell.Mixfile do
     end
     ["test.all":  ["test.unit", "test.integration"],
      "test.unit": "test test/unit"] ++
-      ["spell.example.all": Dict.keys(examples) |> Enum.map(&Atom.to_string/1)] ++
+      ["spell.example.all": Keyword.keys(examples) |> Enum.map(&Atom.to_string/1)] ++
       examples
   end
 

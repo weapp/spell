@@ -63,38 +63,42 @@ defmodule Spell do
 
   # Delegate commonly used role functions into `Spell`.
   # WARNING: `defdelegate` drops the documentation -- kills the illusion.
-  defdelegate [cast_goodbye(peer),
-               cast_goodbye(peer, options),
-               call_goodbye(peer),
-               call_goodbye(peer, options)], to: Role.Session
-  defdelegate [cast_publish(peer, topic),
-               cast_publish(peer, topic, options),
-               call_publish(peer, topic),
-               call_publish(peer, topic, options),
-               receive_published(peer, request_id)], to: Role.Publisher
-  defdelegate [cast_subscribe(peer, topic),
-               cast_subscribe(peer, topic, options),
-               call_subscribe(peer, topic),
-               call_subscribe(peer, topic, options),
-               receive_event(peer, subscription),
-               cast_unsubscribe(peer, subscription),
-               call_unsubscribe(peer, subscription),
-               receive_unsubscribed(peer, unsubscribe)], to: Role.Subscriber
-  defdelegate [cast_call(peer, procedure),
-               cast_call(peer, procedure, options),
-               receive_result(peer, call_id),
-               call(peer, procedure),
-               call(peer, procedure, options)], to: Role.Caller
-  defdelegate [cast_register(peer, procedure),
-               cast_register(peer, procedure, options),
-               receive_registered(peer, register_id),
-               call_register(peer, procedure),
-               call_register(peer, procedure, options),
-               cast_unregister(peer, registration),
-               call_unregister(peer, registration),
-               receive_unregistered(peer, registration),
-               cast_yield(peer, invocation),
-               cast_yield(peer, invocation, options)], to: Role.Callee
+  defdelegate cast_goodbye(peer), to: Role.Session
+  defdelegate cast_goodbye(peer, options), to: Role.Session
+  defdelegate call_goodbye(peer), to: Role.Session
+  defdelegate call_goodbye(peer, options), to: Role.Session
+
+  defdelegate cast_publish(peer, topic), to: Role.Publisher
+  defdelegate cast_publish(peer, topic, options), to: Role.Publisher
+  defdelegate call_publish(peer, topic), to: Role.Publisher
+  defdelegate call_publish(peer, topic, options), to: Role.Publisher
+  defdelegate receive_published(peer, request_id), to: Role.Publisher
+
+  defdelegate cast_subscribe(peer, topic), to: Role.Subscriber
+  defdelegate cast_subscribe(peer, topic, options), to: Role.Subscriber
+  defdelegate call_subscribe(peer, topic), to: Role.Subscriber
+  defdelegate call_subscribe(peer, topic, options), to: Role.Subscriber
+  defdelegate receive_event(peer, subscription), to: Role.Subscriber
+  defdelegate cast_unsubscribe(peer, subscription), to: Role.Subscriber
+  defdelegate call_unsubscribe(peer, subscription), to: Role.Subscriber
+  defdelegate receive_unsubscribed(peer, unsubscribe), to: Role.Subscriber
+
+  defdelegate cast_call(peer, procedure), to: Role.Caller
+  defdelegate cast_call(peer, procedure, options), to: Role.Caller
+  defdelegate receive_result(peer, call_id), to: Role.Caller
+  defdelegate call(peer, procedure), to: Role.Caller
+  defdelegate call(peer, procedure, options), to: Role.Caller
+
+  defdelegate cast_register(peer, procedure), to: Role.Callee
+  defdelegate cast_register(peer, procedure, options), to: Role.Callee
+  defdelegate receive_registered(peer, register_id), to: Role.Callee
+  defdelegate call_register(peer, procedure), to: Role.Callee
+  defdelegate call_register(peer, procedure, options), to: Role.Callee
+  defdelegate cast_unregister(peer, registration), to: Role.Callee
+  defdelegate call_unregister(peer, registration), to: Role.Callee
+  defdelegate receive_unregistered(peer, registration), to: Role.Callee
+  defdelegate cast_yield(peer, invocation), to: Role.Callee
+  defdelegate cast_yield(peer, invocation, options), to: Role.Callee
 
   # Module Attributes
 
@@ -200,7 +204,7 @@ defmodule Spell do
   # TODO: This function is a bit of a mess. Validation utils would be nice
   @spec normalize_options(Keyword.t) :: tuple
   defp normalize_options(options) when is_list(options) do
-    case Dict.get(options, :roles, @default_roles)
+    case Keyword.get(options, :roles, @default_roles)
          |> Role.normalize_role_options() do
       {:ok, role_options} ->
         session_options = Keyword.take(options, [:realm, :authentication])
